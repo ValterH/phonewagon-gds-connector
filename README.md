@@ -14,7 +14,7 @@ You can try out the managed deployment of the latest code: [PhoneWagon Community
 
 - **Third-party authentication**  
   This community connector requires third-party authentication. 
-  A cliend_id and client_secret are required.
+  A `client_id` and `client_secret` are required.
 - **Error handling and messaging**  
   Example of using [error handling methods and providing useful error messages
   to users](https://developers.google.com/datastudio/connector/error-handling).
