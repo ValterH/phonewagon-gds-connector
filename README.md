@@ -10,11 +10,6 @@ Connector uses the [PhoneWagon API](https://phonewagon.com/api/)
 
 You can try out the managed deployment of the latest code: [PhoneWagon Community Connector](https://datastudio.google.com/u/0/datasources/create?connectorId=AKfycbxRJ9ifqWr9HS8M2tZqjQ86Xk5Zp2kaTiTHRtPZWNlV)
 
-## Deploy the Community Connector yourself
-
-Use the [deployment guide](../deploy.md) to deploy the Community Connector
-yourself.
-
 ## Examples and use cases covered in the connector
 
 - **Third-party authentication**  
