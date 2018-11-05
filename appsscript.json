@@ -1,0 +1,18 @@
+{
+  "timeZone": "Europe/Berlin",
+  "dataStudio": {
+    "name": "PhoneWagon Connector",
+    "logoUrl": "https://images.g2crowd.com/uploads/product/image/social_landscape/social_landscape_1510161139/phonewagon.png",
+    "company": "Valter Hudovernik",
+    "addonUrl": "https://github.com/ValterH/phonewagon-gds-connector",
+    "supportUrl":"https://developers.google.com/datastudio/connector/support",
+    "description": "This connector can be used to display and analize your PhoneWagon data. To use the connector, ask the PhoneWagon support team for your developer and secret key. After you have obtained your ClientId and ClientSecret enter them as username (Id) and password (Secret)",
+    "shortDescription":"This connector is used to connect to your PhoneWagon data",
+    "authType": ["USER_PASS"],
+    "feeType":["FREE"]
+  },
+  "urlFetchWhitelist": [
+    "https://api.phonewagon.com/token",     
+    "https://api.phonewagon.com/api/calls"
+  ]
+}
