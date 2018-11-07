@@ -53,6 +53,7 @@ function getConfig(request) {
   return connectorConfig;
 }
 
+/** Static Schema for Connector's data */
 var dataSchema = [{
                     name: 'CompanyId',
                     label: 'Company Id',
@@ -268,12 +269,12 @@ var dataSchema = [{
                     semantics: { conceptType: 'METRIC' }
                   }];
                   
-/** Returns the schema for the connector, depending on the configuration */
+/** Returns the schema for the connector */
 function getSchema(request) {
   return {schema: dataSchema};
 }
 
-/** Returns the schema and data for the GDS query */
+/** Returns the schema and data for the GDS query, depending on the configuration */
 function getData(request) {
   var startDate = request.dateRange.startDate;
   var endDate = request.dateRange.endDate;
@@ -351,7 +352,7 @@ function authenticate(id, secret) {
   var expires = new Date();
   expires = new Date(expires.getTime() + seconds);
   
-  /** set Token and Expiration Time to Script Properties */
+  // set Token and Expiration Time to Script Properties 
   var sp = PropertiesService.getScriptProperties();
   sp.setProperty("token", token);
   sp.setProperty("expires",expires);
@@ -369,6 +370,7 @@ function getOptions(id, secret) {
   return options;
 }
 
+/** Returns a list of available Clients for the token (user) */
 function getCompanies(token) {
   var options = []
   var url = 'https://api.phonewagon.com/api/calls';
@@ -389,6 +391,7 @@ function getCompanies(token) {
   return options;
 }
 
+/** Returns a list of available Campaigns for the token (user) */
 function getCampaigns(token, companies) {
   var options = [];
   var url = 'https://api.phonewagon.com/api/calls?company_id=';
@@ -505,7 +508,7 @@ function getRows(calls, schema) {
   return data;
 }
 
-/** Returns true or false if the date of the call is in the specified date range or not */
+/** Returns true or false if the date is in the specified date range or not */
 function checkDate(start, call, end) {
   var startDate = new Date(start);
   var callDate = new Date(call);
@@ -555,6 +558,7 @@ function throwConnectorError(message, userSafe) {
   throw new Error(message);
 }
  
+/** Required function to validate users authentication */
 function isAuthValid() {
   var userProperties = PropertiesService.getUserProperties();
   var id = userProperties.getProperty("ID");
@@ -562,6 +566,8 @@ function isAuthValid() {
   return validateCredentials(id, secret);
 }
 
+
+/** Validates Users Credentials (client_id, client_secret) */
 function validateCredentials(id, secret) {
   if (id === null || secret === null) {
     return false;
@@ -580,10 +586,10 @@ function validateCredentials(id, secret) {
     return false;
   }
   // Status OK: 200
-  // Status unauthorized: 401
   if (response.getResponseCode() == 200) {
     return true;
   }
+  // Status unauthorized or invalid request
   return false;
 }
 
@@ -607,12 +613,14 @@ function setCredentials(request) {
   };
 }
 
+/** Clears Scripts Properties */
 function deleteScriptProperties() {
   var sp = PropertiesService.getScriptProperties();
   sp.deleteProperty("token");
   sp.deleteProperty("expires");
 }
 
+/** Clears User Authentication */
 function resetAuth() {
   var userProperties = PropertiesService.getUserProperties();
   userProperties.deleteProperty("ID");
