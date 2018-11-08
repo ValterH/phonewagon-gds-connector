@@ -478,7 +478,7 @@ function getRows(calls, schema) {
           tags.push(calls[i][item][t].TagName);
         }
         items.push("");
-        ix = items.indexOf("");
+        ix = j;
       } else if (item == "TotalCalls") {
         items.push(total);
       } 
@@ -494,10 +494,8 @@ function getRows(calls, schema) {
     if (tags.length > 1) {
       var entries = new Array(tags.length);
       for (tag = 0; tag < tags.length; tag++) {
-        entries[tag] = new Array(items.length);
-        for (el = 0; el < items.length; el++) {
-          entries[tag][el] = items[el];
-        }
+        var items_string = JSON.stringify(items);
+        entries[tag] = JSON.parse(items_string);
         entries[tag][ix] = tags[tag];
         data.push({"values" : entries[tag]});
       }
