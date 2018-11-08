@@ -91,12 +91,24 @@ var dataSchema = [{
                     semantics: { conceptType: 'DIMENSION' }
                   },
                   {
-                    name: 'ReceiveCallTime',
-                    label: 'Receive Call Time',
+                    name: 'Timestamp',
+                    label: 'Timestamp',
+                    dataType: 'STRING',
+                    semantics: { conceptType: 'DIMENSION' }
+                  },
+                  {
+                    name: 'CallDate',
+                    label: 'Call Date',
                     dataType: 'STRING',
                     semantics: { conceptType: 'DIMENSION',
-                                 SemanticGroup: 'DATETIME'
+                                 SemanticType: 'YEAR_MONTH_DAY'
                                 }
+                  },
+                  {
+                    name: 'CallTime',
+                    label: 'Call Time',
+                    dataType: 'STRING',
+                    semantics: { conceptType: 'DIMENSION' }
                   },
                   {
                     name: 'CustomerPhoneNumber',
@@ -266,7 +278,9 @@ var dataSchema = [{
                     name: 'TotalCalls',
                     label: 'Total Calls',
                     dataType: 'NUMBER',
-                    semantics: { conceptType: 'METRIC' }
+                    semantics: { conceptType: 'METRIC',
+                                 DefaultAggregationType: 'SUM' 
+                               }
                   }];
                   
 /** Returns the schema for the connector */
@@ -462,7 +476,6 @@ function getCalls(token, start, end, company, campaign) {
 
 /** Returns data about calls properly structured and ready to return in function getData */
 function getRows(calls, schema) {
-  var total = calls.length;
   var data = [];
   var items = [];
   var ix = 0;
@@ -471,24 +484,28 @@ function getRows(calls, schema) {
   for (i = 0; i < calls.length; i++) {
     items = [];
     tags = [];
+    var callTime = calls[i]["ReceiveCallTime"]
+    var datetime = callTime.split("T");
     for(j = 0; j < schema.length; j++) {
       var item = schema[j].name;
+      var value = calls[i][item];
       if (item == "CallsTags") {
-        for (t=0; t < calls[i][item].length; t++) {
-          tags.push(calls[i][item][t].TagName);
+        for (t=0; t < value.length; t++) {
+          tags.push(value[t].TagName);
         }
         items.push("");
         ix = j;
       } else if (item == "TotalCalls") {
-        items.push(total);
+        items.push(1);
       } 
-      else {
-        if (schema[j].dataType == 'NUMBER' && calls[i][item] == null) {
-          items.push(0);
-        }
-        else {
-          items.push(calls[i][item]);
-        }
+      else if (value == null){
+        if (item == "CallDate") items.push(datetime[0].split("-").join(""));
+        else if (item == "CallTime") items.push(datetime[1]);
+        else if (item == "Timestamp") items.push(callTime);
+        else if (schema[j].dataType == 'NUMBER') items.push(0);
+        else if (schema[j].dataType == 'STRING') items.push("");
+      } else {
+          items.push(value);
       }
     }
     if (tags.length > 1) {
@@ -503,6 +520,7 @@ function getRows(calls, schema) {
       data.push({"values" : items});
     }
   }
+  console.log(data,schema);
   return data;
 }
 
